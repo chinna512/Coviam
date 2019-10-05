@@ -20,6 +20,7 @@
 		579E291C23461271003A439A /* ProductsResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579E291A23461271003A439A /* ProductsResultsViewController.swift */; };
 		579E291D23461271003A439A /* ProductsResultsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 579E291B23461271003A439A /* ProductsResultsViewController.xib */; };
 		579E292B2347B33B003A439A /* placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 579E292A2347B33B003A439A /* placeholder.png */; };
+		57A08A952349065300276B92 /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57A08A942349065300276B92 /* Reachability.swift */; };
 		57F2A8BC2347D8DE0027C0B7 /* ProductCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2A8BA2347D8DE0027C0B7 /* ProductCollectionViewCell.swift */; };
 		57F2A8BD2347D8DE0027C0B7 /* ProductCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57F2A8BB2347D8DE0027C0B7 /* ProductCollectionViewCell.xib */; };
 		57F2A8C223483EDC0027C0B7 /* ProductionGridViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F2A8C023483EDC0027C0B7 /* ProductionGridViewCell.swift */; };
@@ -56,6 +57,7 @@
 		579E291A23461271003A439A /* ProductsResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsResultsViewController.swift; sourceTree = "<group>"; };
 		579E291B23461271003A439A /* ProductsResultsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductsResultsViewController.xib; sourceTree = "<group>"; };
 		579E292A2347B33B003A439A /* placeholder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = placeholder.png; sourceTree = "<group>"; };
+		57A08A942349065300276B92 /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		57F2A8BA2347D8DE0027C0B7 /* ProductCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCollectionViewCell.swift; sourceTree = "<group>"; };
 		57F2A8BB2347D8DE0027C0B7 /* ProductCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductCollectionViewCell.xib; sourceTree = "<group>"; };
 		57F2A8C023483EDC0027C0B7 /* ProductionGridViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductionGridViewCell.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 		579E28F12345D73B003A439A /* Coviam */ = {
 			isa = PBXGroup;
 			children = (
+				57A08A942349065300276B92 /* Reachability.swift */,
 				579E292A2347B33B003A439A /* placeholder.png */,
 				57F2A8C52348EA870027C0B7 /* rateus_off.png */,
 				57F2A8C42348EA860027C0B7 /* rateus_on.png */,
@@ -250,6 +253,7 @@
 				579E29192345FDE5003A439A /* ProductsCodable.swift in Sources */,
 				57F2A8BC2347D8DE0027C0B7 /* ProductCollectionViewCell.swift in Sources */,
 				579E28F32345D73B003A439A /* AppDelegate.swift in Sources */,
+				57A08A952349065300276B92 /* Reachability.swift in Sources */,
 				57F2A8C223483EDC0027C0B7 /* ProductionGridViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

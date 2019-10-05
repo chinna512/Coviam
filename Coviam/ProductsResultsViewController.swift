@@ -127,25 +127,28 @@ class ProductsResultsViewController: UIViewController,UICollectionViewDelegate, 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if isGetResponse {
             if (scrollView.contentOffset.y == scrollView.contentSize.height - scrollView.frame.size.height){
-                paginationCount += 1
-                isGetResponse = false
-                let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=%@&itemPerPage=24",self.searchItemTitle!, String(paginationCount))
-                RequestClass.getData(urlString: urlString, completionHandler: {
-                    [weak self] (dict, error) in
-                    if self != nil{
-                        if error == nil{
-                            self?.isGetResponse = true
-                            if let productsArray = dict!["products"] as? NSArray {
-                                self!.viewModel!.parseData(productInfo: productsArray)
-                                DispatchQueue.main.async {
-                                    self!.collectionView.reloadData()
+                if (Reachability()!.connection != .none){
+                    paginationCount += 1
+                    isGetResponse = false
+                    let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=%@&itemPerPage=24",self.searchItemTitle!, String(paginationCount))
+                    RequestClass.getData(urlString: urlString, completionHandler: {
+                        [weak self] (dict, error) in
+                        if self != nil{
+                            if error == nil{
+                                self?.isGetResponse = true
+                                if let productsArray = dict!["products"] as? NSArray {
+                                    self!.viewModel!.parseData(productInfo: productsArray)
+                                    DispatchQueue.main.async {
+                                        self!.collectionView.reloadData()
+                                    }
                                 }
                             }
+                            else if let code = dict!["code"] as? String{
+                                self?.showAlert(message: code)
+                            }
                         }
-                        else if dict!["code"] != nil{
-                        }
-                    }
-                })
+                    })
+                }
             }
         }
     }

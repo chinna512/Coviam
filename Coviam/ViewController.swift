@@ -86,25 +86,32 @@ class ViewController: UIViewController,UISearchBarDelegate,UITableViewDelegate,U
     }
     
     func getDataForTheSearchKeyWord(keyWord:String){
-        let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=0&itemPerPage=24", keyWord)
-        RequestClass.getData(urlString: urlString, completionHandler: {
-            [weak self] (dict, error) in
-            if self != nil{
-                self!.viewModel?.removeAllcachedObjects()
-                if let productsArray = dict!["products"] as? NSArray {
-                    self!.viewModel!.parseData(productInfo: productsArray)
-                    self!.suggestions = self!.viewModel!.getProductNames()
-                    DispatchQueue.main.async {
-                        self!.tableView.reloadData()
+        if (Reachability()!.connection != .none){
+            let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=0&itemPerPage=24", keyWord)
+            RequestClass.getData(urlString: urlString, completionHandler: {
+                [weak self] (dict, error) in
+                if self != nil{
+                    self!.viewModel?.removeAllcachedObjects()
+                    if let productsArray = dict!["products"] as? NSArray {
+                        self!.viewModel!.parseData(productInfo: productsArray)
+                        self!.suggestions = self!.viewModel!.getProductNames()
+                        DispatchQueue.main.async {
+                            self!.tableView.reloadData()
+                        }
+                    }
+                    else if let code = dict!["code"] as? String{
+                        self?.showAlert(message: code)
                     }
                 }
-                else if dict!["code"] != nil{
-                }
-            }
-        })
+            })
+        }
+        else{
+            showAlert(message: "No Internet Connectivity")
+        }
     }
     
     func showAlert(message:String){
+        self.searchController!.dismiss(animated: true, completion: nil)
         DispatchQueue.main.async {
             let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
             let action1 = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
