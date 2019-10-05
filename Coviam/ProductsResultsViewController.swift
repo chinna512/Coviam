@@ -8,40 +8,35 @@
 
 import UIKit
 
-class ProductsResultsViewController: UIViewController,UITableViewDataSource, UITableViewDelegate {
-
-    @IBOutlet weak var holderView: UIView!
+class ProductsResultsViewController: UIViewController,UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    @IBOutlet weak var listGridButton: UIButton!
+    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var footerView: UIView!
     
     var productsListArray:NSMutableArray? = nil
     var viewModel:ProductsViewModel? = nil
     var tableView:UITableView?
     var selectedItemTitle:String? = nil
     var searchItemTitle:String? = nil
+    var isGetResponse = true
+    var isGrid = false
+    var paginationCount = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.setTitle(searchItemTitle!, subtitle: selectedItemTitle!)
         let button = UIBarButtonItem()
-        button.title = "chinna"
+        button.title = "Custom"
         self.navigationItem.hidesBackButton = false
-        let backItem = UIBarButtonItem()
-        backItem.title = "Something Else"
-        self.navigationItem.setRightBarButtonItems([button,button], animated: true)
-
-    }
-
-    func loadListView(){
-        tableView = UITableView(frame: self.holderView.bounds)
-        self.tableView!.register( UINib(nibName: "ProductsResultsTableViewCell", bundle: nil), forCellReuseIdentifier: "ProductsResultsTableViewCell")
-        self.tableView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        tableView?.dataSource = self
-        tableView?.delegate = self
-        self.holderView.addSubview(tableView!)
+        self.navigationItem.setRightBarButtonItems([button], animated: true)
+        self.navigationItem.title = searchItemTitle
+        setUpCollectionView()
     }
     
-    func loadGridView(){
-        
+    func setUpCollectionView(){
+        self.collectionView.register(UINib(nibName: "ProductCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "ProductCollectionViewCell")
+        self.collectionView.register(UINib(nibName: "ProductionGridViewCell", bundle: nil), forCellWithReuseIdentifier: "ProductionGridViewCell")
+        collectionView.backgroundColor = UIColor.clear
     }
     
     override func viewDidLayoutSubviews() {
@@ -51,84 +46,131 @@ class ProductsResultsViewController: UIViewController,UITableViewDataSource, UIT
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        loadListView()
+        collectionView.delegate = self
+        collectionView.dataSource = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
     }
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return (viewModel?.getNumberOfProductsAvailable())!
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ProductsResultsTableViewCell") as! ProductsResultsTableViewCell
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        guard let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else {
+            return
+        }
+        flowLayout.invalidateLayout()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
         var nameText:String? = nil
         var retialText:String? = nil
         var otherOffersStaringFrom:String? = nil
         var offersCount:Int
         var rating:Int
+        var ratingCount:Int
         var imageUrl:String? = nil
         var minPriceWithDiscount:NSMutableAttributedString? = nil
-        (nameText, retialText, rating, minPriceWithDiscount, otherOffersStaringFrom, offersCount,imageUrl) = (viewModel?.getProductDetailsForIndexptah(index:indexPath.row))!
-        cell.updateLabelData(nameText: nameText!, retialText: retialText!, rating: rating, minPriceWithDiscount: minPriceWithDiscount, otherOffersStaringFrom: otherOffersStaringFrom, offersCount: offersCount, imageUrl:imageUrl)
-        cell.isUserInteractionEnabled = false
-        return cell
+        
+        if !isGrid{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCollectionViewCell", for: indexPath) as! ProductCollectionViewCell
+            (nameText, retialText, rating, ratingCount, minPriceWithDiscount, otherOffersStaringFrom, offersCount,imageUrl) = (viewModel?.getProductDetailsForIndexptah(index:indexPath.row))!
+            cell.updateLabelData(nameText: nameText!, retialText: retialText!, rating: rating, ratingCount: ratingCount, minPriceWithDiscount: minPriceWithDiscount, otherOffersStaringFrom: otherOffersStaringFrom, offersCount: offersCount, imageUrl:imageUrl)
+            cell.isUserInteractionEnabled = false
+            cell.layoutSubviews()
+            cell.layoutIfNeeded()
+            return cell
+        }
+        else{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductionGridViewCell", for: indexPath) as! ProductionGridViewCell
+            (nameText, retialText, rating, ratingCount, minPriceWithDiscount, otherOffersStaringFrom, offersCount,imageUrl) = (viewModel?.getProductDetailsForIndexptah(index:indexPath.row))!
+            cell.updateLabelData(nameText: nameText!, retialText: retialText!, rating: rating, ratingCount: rating, minPriceWithDiscount: minPriceWithDiscount, otherOffersStaringFrom: otherOffersStaringFrom, offersCount: offersCount, imageUrl:imageUrl)
+            cell.isUserInteractionEnabled = false
+            cell.layoutSubviews()
+            cell.layoutIfNeeded()
+            return cell
+        }
+        
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 330
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if !isGrid{
+            return CGSize(width: view.frame.width, height: 297)
+        }
+        else{
+            let frame = self.view.safeAreaLayoutGuide
+            let orientation = UIApplication.shared.statusBarOrientation
+            if orientation == .portrait{
+                return CGSize(width: frame.layoutFrame.size.width/2 - 5, height: 560)
+            }
+            return CGSize(width: frame.layoutFrame.size.width/3, height: 560)
+        }
     }
     
-    func setTitle(_ title: String, subtitle: String) {
-        let rect = CGRect(x: 0, y: 0, width: 400, height: 50)
-        let titleSize: CGFloat = 20     // adjust as needed
-        let subtitleSize: CGFloat = 15
-        
-        let label = UILabel(frame: rect)
-        label.backgroundColor = .clear
-        label.numberOfLines = 2
-        label.textAlignment = .center
-        label.textColor = .black
-        
-        let text = NSMutableAttributedString()
-        text.append(NSAttributedString(string: title, attributes: [.font : UIFont.boldSystemFont(ofSize: titleSize)]))
-        text.append(NSAttributedString(string: "\n\(subtitle)", attributes: [.font : UIFont.systemFont(ofSize: subtitleSize)]))
-        label.attributedText = text
-        self.navigationItem.titleView = label
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 0,left: 0,bottom: 0,right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if isGetResponse {
+            if (scrollView.contentOffset.y == scrollView.contentSize.height - scrollView.frame.size.height){
+                paginationCount += 1
+                isGetResponse = false
+                let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=%@&itemPerPage=24",self.searchItemTitle!, String(paginationCount))
+                RequestClass.getData(urlString: urlString, completionHandler: {
+                    [weak self] (dict, error) in
+                    if self != nil{
+                        if error == nil{
+                            self?.isGetResponse = true
+                            if let productsArray = dict!["products"] as? NSArray {
+                                self!.viewModel!.parseData(productInfo: productsArray)
+                                DispatchQueue.main.async {
+                                    self!.collectionView.reloadData()
+                                }
+                            }
+                        }
+                        else if dict!["code"] != nil{
+                        }
+                    }
+                })
+            }
+        }
+    }
+    
+    func showAlert(message:String){
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+            let action1 = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
+                print("You've pressed default");
+            }
+            alertController.addAction(action1)
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func listGridModeAction(_ sender: Any) {
+        let button = sender as! UIButton
+        if isGrid{
+            button.setTitle("Grid", for: .normal)
+        }
+        else{
+            button.setTitle("List", for: .normal)
+        }
+        isGrid = !isGrid
+        self.collectionView.reloadData()
     }
 }
 
-extension UINavigationItem {
-    
-    func setTitle(_ title: String, subtitle: String) {
-        let one = UILabel()
-        one.text = title
-        one.font = UIFont.systemFont(ofSize: 17)
-        one.sizeToFit()
-        
-        let two = UILabel()
-        two.text = subtitle
-        two.font = UIFont.systemFont(ofSize: 12)
-        two.textAlignment = .center
-        two.sizeToFit()
-        
-        let stackView = UIStackView(arrangedSubviews: [one, two])
-        stackView.distribution = .equalCentering
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        
-        let width = max(one.frame.size.width, two.frame.size.width)
-        stackView.frame = CGRect(x: 0, y: 0, width: width, height: 35)
-        
-        one.sizeToFit()
-        two.sizeToFit()
-        self.titleView = stackView
-    }
-}

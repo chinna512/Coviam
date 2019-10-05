@@ -14,6 +14,7 @@ class ViewController: UIViewController,UISearchBarDelegate,UITableViewDelegate,U
     var viewModel:ProductsViewModel? = nil
     var searchController:UISearchController? = nil
     var searchText = ""
+    var suggestions:[String]? = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,12 +24,13 @@ class ViewController: UIViewController,UISearchBarDelegate,UITableViewDelegate,U
     }
     
     func addSearchBar(){
+        self.navigationItem.title = "Search"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .automatic
         searchController = UISearchController(searchResultsController: nil)
         searchController!.searchBar.delegate = self
         self.navigationItem.searchController = searchController
-    }
+   }
     
     func registerTableViewCellAndAssignDelegate(){
         self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -66,12 +68,15 @@ class ViewController: UIViewController,UISearchBarDelegate,UITableViewDelegate,U
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (viewModel?.getNumberOfProductsAvailable())!
+        if self.suggestions != nil{
+            return (suggestions?.count)!
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell:UITableViewCell = (self.tableView.dequeueReusableCell(withIdentifier: "cell") as UITableViewCell?)!
-        let displayName = viewModel?.getNameOfProductForIndex(index: indexPath.row)
+        let displayName =  suggestions![indexPath.row]
         cell.textLabel?.text = displayName
         return cell
     }
@@ -83,14 +88,31 @@ class ViewController: UIViewController,UISearchBarDelegate,UITableViewDelegate,U
     func getDataForTheSearchKeyWord(keyWord:String){
         let urlString = String(format: "https://www.blibli.com/backend/search/products?searchTerm=%@&start=0&itemPerPage=24", keyWord)
         RequestClass.getData(urlString: urlString, completionHandler: {
-            (array, error) in
-            self.viewModel?.removeAllcachedObjects()
-            let productsArray = array!["products"] as! NSArray
-            self.viewModel!.parseData(productInfo: productsArray)
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            [weak self] (dict, error) in
+            if self != nil{
+                self!.viewModel?.removeAllcachedObjects()
+                if let productsArray = dict!["products"] as? NSArray {
+                    self!.viewModel!.parseData(productInfo: productsArray)
+                    self!.suggestions = self!.viewModel!.getProductNames()
+                    DispatchQueue.main.async {
+                        self!.tableView.reloadData()
+                    }
+                }
+                else if dict!["code"] != nil{
+                }
             }
         })
+    }
+    
+    func showAlert(message:String){
+        DispatchQueue.main.async {
+            let alertController = UIAlertController(title: "Alert", message: message, preferredStyle: .alert)
+            let action1 = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction) in
+                print("You've pressed default");
+            }
+            alertController.addAction(action1)
+            self.present(alertController, animated: true, completion: nil)
+        }
     }
 }
 

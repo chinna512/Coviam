@@ -12,7 +12,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsResultsViewController" customModule="Coviam" customModuleProvider="target">
             <connections>
-                <outlet property="holderView" destination="9AZ-EI-FFk" id="WS3-dJ-rY1"/>
+                <outlet property="collectionView" destination="qsF-av-Va4" id="i1j-Y7-9QF"/>
+                <outlet property="footerView" destination="iyJ-EY-ZDh" id="Boj-pH-qSN"/>
+                <outlet property="listGridButton" destination="RQL-Ab-euV" id="dGO-U2-WXJ"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -21,27 +23,44 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9AZ-EI-FFk">
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="qsF-av-Va4">
                     <rect key="frame" x="0.0" y="44" width="414" height="760"/>
-                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
+                    <color key="backgroundColor" red="0.24327909880000001" green="0.73257553580000001" blue="0.22142145690000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="h1b-TR-aKo">
+                        <size key="itemSize" width="300" height="300"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                </collectionView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iyJ-EY-ZDh">
-                    <rect key="frame" x="0.0" y="810" width="414" height="50"/>
-                    <color key="backgroundColor" red="1" green="0.14913141730000001" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <rect key="frame" x="0.0" y="812" width="414" height="50"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RQL-Ab-euV">
+                            <rect key="frame" x="363" y="10" width="30" height="30"/>
+                            <state key="normal" title="Grid"/>
+                            <connections>
+                                <action selector="listGridModeAction:" destination="-1" eventType="touchUpInside" id="TKb-Va-EZv"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     <constraints>
+                        <constraint firstAttribute="trailing" secondItem="RQL-Ab-euV" secondAttribute="trailing" constant="21" id="H8E-2o-yJ7"/>
+                        <constraint firstItem="RQL-Ab-euV" firstAttribute="centerY" secondItem="iyJ-EY-ZDh" secondAttribute="centerY" id="QYk-rr-9FZ"/>
                         <constraint firstAttribute="height" constant="50" id="d1H-Qz-B3a"/>
                     </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="9AZ-EI-FFk" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="2Gx-nu-MPd"/>
-                <constraint firstItem="9AZ-EI-FFk" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Gf9-rJ-6c9"/>
-                <constraint firstItem="iyJ-EY-ZDh" firstAttribute="leading" secondItem="9AZ-EI-FFk" secondAttribute="leading" id="Jrk-Cv-Nsr"/>
-                <constraint firstItem="iyJ-EY-ZDh" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-52" id="L4i-2u-UaM"/>
-                <constraint firstItem="9AZ-EI-FFk" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" constant="-58" id="SNM-ye-IXy"/>
+                <constraint firstItem="qsF-av-Va4" firstAttribute="width" secondItem="fnl-2z-Ty3" secondAttribute="width" id="AGb-5i-bu1"/>
+                <constraint firstItem="qsF-av-Va4" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="D5L-L7-JM6"/>
+                <constraint firstItem="iyJ-EY-ZDh" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="L4i-2u-UaM"/>
+                <constraint firstItem="qsF-av-Va4" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" constant="-58" id="NiT-mg-6qP"/>
+                <constraint firstItem="iyJ-EY-ZDh" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="b14-CF-gyc"/>
+                <constraint firstItem="qsF-av-Va4" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" constant="-58" id="r3K-ve-9Jz"/>
                 <constraint firstItem="iyJ-EY-ZDh" firstAttribute="width" secondItem="fnl-2z-Ty3" secondAttribute="width" id="rN8-r5-y5E"/>
-                <constraint firstItem="9AZ-EI-FFk" firstAttribute="width" secondItem="fnl-2z-Ty3" secondAttribute="width" id="w85-8C-L0L"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="137.68115942028987" y="105.80357142857143"/>
